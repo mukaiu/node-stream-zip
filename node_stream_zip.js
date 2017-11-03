@@ -714,12 +714,15 @@ ZipEntry.prototype.readDataHeader = function(data) {
 
 ZipEntry.prototype.read = function(data, offset) {
     let nameBuffer = data.slice(offset, offset += this.fnameLen)
+    this.nameBase64 = nameBuffer.toString('base64');
+
     let charResult = jschardet.detect(nameBuffer);
-    console.log(charResult);
-    if (charResult.encoding == 'GB2312')
-        this.name = iconv.decode(nameBuffer, 'gbk');
+
+    if (charResult.encoding == 'UTF-8')
+        this.name = nameBuffer.toString();
+
     else
-        this.name = nameBuffer.toString();    
+        this.name = iconv.decode(nameBuffer, 'gbk');
 
     var lastChar = data[offset - 1];
     this.isDirectory = (lastChar == 47) || (lastChar == 92);
