@@ -15,6 +15,9 @@ var
 
 // endregion
 
+let iconv = require('iconv-lite');
+let jschardet = require('jschardet');
+
 // region Constants
 
 var consts = {
@@ -710,7 +713,14 @@ ZipEntry.prototype.readDataHeader = function(data) {
 };
 
 ZipEntry.prototype.read = function(data, offset) {
-    this.name = data.slice(offset, offset += this.fnameLen).toString();
+    let nameBuffer = data.slice(offset, offset += this.fnameLen)
+    let charResult = jschardet.detect(nameBuffer);
+    console.log(charResult);
+    if (charResult.encoding == 'GB2312')
+        this.name = iconv.decode(nameBuffer, 'gbk');
+    else
+        this.name = nameBuffer.toString();    
+
     var lastChar = data[offset - 1];
     this.isDirectory = (lastChar == 47) || (lastChar == 92);
 

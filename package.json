@@ -31,5 +31,9 @@
   },
   "devDependencies": {
     "nodeunit": "^0.9.1"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.4.19",
+    "jschardet": "^1.6.0"
   }
 }
